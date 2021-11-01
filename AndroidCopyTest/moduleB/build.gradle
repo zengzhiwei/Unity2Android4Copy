@@ -1,0 +1,56 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation files('libs\\unity-classes.jar')
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
+
+//删除旧的jar的Task：deleteOldJar 名字随便写
+task deleteOldJar(type: Delete) {
+    delete 'build/outputs/yourName.jar'
+}
+
+//导出新的jar，exportJar也可是别的名字
+task exportJar(type: Copy) {
+//原地址
+    from('build/intermediates/bundles/release/')
+//导出后的地址
+    into('build/outputs/')
+    include('classes.jar')
+    //重命名jar
+    rename('classes.jar', 'yourName.jar')
+}
+
+exportJar.dependsOn(deleteOldJar, build)
